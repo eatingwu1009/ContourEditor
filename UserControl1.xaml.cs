@@ -21,11 +21,14 @@ namespace V1
     /// </summary>
     public partial class UserControl1 : UserControl
     {
-        public List<String> StructureList { get; set; }
+        public List<ContourEditorStructure> ContourEditorStructures { get; set; }
+        public List<string> StructureList { get; set; }
         public List<String> TypeList { get; set; }
+        public string SelectedStructureId { get; set; }
         public UserControl1(ScriptContext scriptContext)
         {
-            StructureList = new List<String>();
+            ContourEditorStructures = new List<ContourEditorStructure>();
+            StructureList = new List<string>();
             foreach (var structure in scriptContext.StructureSet.Structures)
             {
                 StructureList.Add(structure.Id);
