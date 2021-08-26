@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,13 +22,13 @@ namespace V1
     /// </summary>
     public partial class UserControl1 : UserControl
     {
-        public List<ContourEditorStructure> ContourEditorStructures { get; set; }
+        public ObservableCollection<NewStructure> NewStructures { get; set; }
         public List<string> StructureList { get; set; }
         public List<String> TypeList { get; set; }
         public string SelectedStructureId { get; set; }
         public UserControl1(ScriptContext scriptContext)
         {
-            ContourEditorStructures = new List<ContourEditorStructure>();
+            NewStructures = new ObservableCollection<NewStructure>();
             StructureList = new List<string>();
             foreach (var structure in scriptContext.StructureSet.Structures)
             {
@@ -52,15 +53,10 @@ namespace V1
             InitializeComponent();
             DataContext = this;
         }
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            MessageBox.Show("Ting Ting is so smart!");
-        }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Ting Ting is so smart!");
-        }
 
+        private void Button_Click_AddStructure(object sender, RoutedEventArgs e)
+        {
+            NewStructures.Add(new NewStructure() { StructureId = SelectedStructureId });
+        }
     }
-
 }
