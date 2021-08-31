@@ -10,5 +10,7 @@ namespace V1
     {
         public string StructureId { get; set; }
         public string StructureType { get; set; }
+
+        public int StructureVolume { get; set; }
     }
 }

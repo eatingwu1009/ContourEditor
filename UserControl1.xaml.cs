@@ -28,7 +28,8 @@ namespace V1
         public List<String> TypeList { get; set; }
         public List<String> TargetName { get; set; }
         public List<String> TargetType { get; set; }
-        public String SelectedStructureId { get; set; }
+        public int SelectedDeleteStructureIndex { get; set; }
+        public int SelectedAddStructureIndex { get; set; }
         public StructureSet ss { get; set; }
         public ObservableCollection<String> IsSelected { get; set; }
         public UserControl1(ScriptContext scriptContext)
@@ -55,17 +56,20 @@ namespace V1
             TypeList.Add("DOSE_REGION");
             TypeList.Add("SUPPORT");
 
+            ss = scriptContext.StructureSet;
+
             InitializeComponent();
             DataContext = this;
         }
 
         private void Button_Click_AddStructure(object sender, RoutedEventArgs e)
         {
-            NewStructures.Add(new NewStructure() { StructureId = SelectedStructureId });
+            NewStructures.Add(new NewStructure() { StructureId = "" });
         }
-        private void Button_Click_deleteStructure(object sender, RoutedEventArgs e)
+        private void Button_Click_DeleteStructure(object sender, RoutedEventArgs e)
         {
-            NewStructures.Remove(NewStructures.Where(i => i.StructureId == SelectedStructureId).Single());
+            if (0 <= SelectedAddStructureIndex && SelectedAddStructureIndex < NewStructures.Count())
+                NewStructures.Remove(NewStructures.Where(i => i.StructureId == NewStructures[SelectedAddStructureIndex].StructureId).FirstOrDefault());
         }
         private void Button_Click_NEXT(object sender, RoutedEventArgs e)
         {
@@ -81,33 +85,16 @@ namespace V1
                         break;
                 }
             }
-            string msg = string.Format("The following DELETEStructure are TARGET, Still Continue? {0}", TargetName);
+
+            string msg = string.Format("The following DELETE Structures are TARGET, Still Continue? {0}", TargetName);
             MessageBoxResult Result = MessageBox.Show(msg, "DoubleCheck", MessageBoxButton.OKCancel);
             if (Result == MessageBoxResult.OK)
             {
+                ss.Patient.BeginModifications();
                 ss.AddStructure("CONTROL", "PTV +5");
             }
         }
-      //  public delegate void SAVE(object sender, RoutedEventArgs e)
-      //  {
-      //  string DefaultPath = "\\\\172.16.41.19\\RO_Share\\06PersonalFolder\\zzPtScoredCard\\" + global.context.Patient.Name + "_" +global.context.Course.Id + ".csv";
-      //      string DefaultPath = "C:\Users\aria\source\repos" + ScriptContext.Patient.Name + "_" + ScriptContext.Course.Id + ".csv";
-      //      FileInfo fi = new FileInfo(DefaultPath);
-		    //if (!fi.Directory.Exists)
-		    //{
-			   // fi.Directory.Create();
-		    //}
-      //      FileStream fs = new FileStream(DefaultPath, FileMode.Create);
-      //      StreamWriter sw = new StreamWriter(fs);
-		    //string data = "";
-		    //for (i = 0; i < numberofitem; i++)
-		    //{
-			   // data = label[i].Content + "," + Box[i].SelectedItem + "," + TypeBox[i].SelectedItem +
-			   // "," + emptyboxdose[i].Text + "," + emptyboxcriteria[i].Text + "," + result[i].Content + "\n";
-			   // sw.Write(data);
-		    //}
-		    //sw.Close();
-		    //fs.Close();
-      //   }
+
+         
     }
 }

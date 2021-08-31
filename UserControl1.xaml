@@ -12,7 +12,7 @@
         <Rectangle HorizontalAlignment="Left" Height="116" Margin="284,25,0,0" Stroke="Black" VerticalAlignment="Top" Width="85" ScrollViewer.VerticalScrollBarVisibility="Disabled" StrokeThickness="0" Cursor="Hand" UseLayoutRounding="False"/>
         <Label Content="DELETE" HorizontalAlignment="Left" Margin="30,25,0,0" VerticalAlignment="Top" Width="207" FontSize="15" />
         <ListBox HorizontalAlignment="Left" Height="140" Margin="30,54,0,0" VerticalAlignment="Top" Width="207" ItemsSource="{Binding StructureList}"
-                 SelectionMode="Multiple" SelectedItem="{Binding SelectedStructureId}">
+                 SelectionMode="Multiple" SelectedIndex="{Binding SelectedDeleteStructureIndex}">
             <ListBox.Resources>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -31,7 +31,7 @@
             </ListBox.Resources>
         </ListBox>
         <Label Content="ADD" HorizontalAlignment="Left" Margin="30,194,0,0" VerticalAlignment="Top" Width="208"  FontSize="15"/>
-        <ListBox HorizontalAlignment="Left" Height="166" Margin="30,254,0,0" VerticalAlignment="Top" Width="207" ItemsSource="{Binding NewStructures}">
+        <ListBox HorizontalAlignment="Left" Height="166" Margin="30,254,0,0" VerticalAlignment="Top" Width="207" ItemsSource="{Binding NewStructures}" SelectedIndex="{Binding SelectedAddStructureIndex}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -46,7 +46,7 @@
         <Button Content="LOAD" HorizontalAlignment="Left" Margin="305,97,0,0" VerticalAlignment="Top" Height="25" Width="42"/>
         <Button Content="NEXT->" HorizontalAlignment="Left" Margin="298,364,0,0" VerticalAlignment="Top" Height="25" Width="56" FontWeight="Bold" Click="Button_Click_NEXT"/>
         <Button Content="+" HorizontalAlignment="Left" Margin="245,225,0,0" VerticalAlignment="Top" Height="30" Width="32"  FontSize="18" BorderThickness="0" Background="MistyRose" Click="Button_Click_AddStructure"/>
-        <Button Content="-" HorizontalAlignment="Left" Margin="245,264,0,0" VerticalAlignment="Top" Height="32" Width="32"  FontSize="22" BorderThickness="0" Background="MistyRose" Click="Button_Click_deleteStructure"/>
+        <Button Content="-" HorizontalAlignment="Left" Margin="245,264,0,0" VerticalAlignment="Top" Height="32" Width="32"  FontSize="22" BorderThickness="0" Background="MistyRose" Click="Button_Click_DeleteStructure"/>
         <Label Content="StructureName" HorizontalAlignment="Left" Height="29" Margin="30,225,0,0" VerticalAlignment="Top" Width="105" Background="DeepPink" Foreground="#FFF3F3F3" FontWeight="Normal" FontSize="12"/>
         <Label Content="Type" HorizontalAlignment="Left" Height="29" Margin="133,225,0,0" VerticalAlignment="Top" Width="105" Background="LightPink" FontSize="12"/>
     </Grid>
