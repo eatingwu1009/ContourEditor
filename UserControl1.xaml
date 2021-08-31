@@ -8,10 +8,10 @@
              Background="White"
              x:Name="MyUserControl"
              d:DesignHeight="430" d:DesignWidth="380">
-    <Grid>
-        <Rectangle HorizontalAlignment="Left" Height="116" Margin="284,25,0,0" Stroke="Black" VerticalAlignment="Top" Width="85" Fill="{DynamicResource {x:Static SystemColors.GradientActiveCaptionBrushKey}}" ScrollViewer.VerticalScrollBarVisibility="Disabled" StrokeThickness="0" Cursor="Hand"/>
-        <Label Content="刪除" HorizontalAlignment="Left" Margin="30,25,0,0" VerticalAlignment="Top" Width="207" Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}"/>
-        <ListBox HorizontalAlignment="Left" Height="130" Margin="30,54,0,0" VerticalAlignment="Top" Width="207" ItemsSource="{Binding StructureList}"
+    <Grid Margin="0,0,0,-25">
+        <Rectangle HorizontalAlignment="Left" Height="116" Margin="284,25,0,0" Stroke="Black" VerticalAlignment="Top" Width="85" ScrollViewer.VerticalScrollBarVisibility="Disabled" StrokeThickness="0" Cursor="Hand" UseLayoutRounding="False"/>
+        <Label Content="DELETE" HorizontalAlignment="Left" Margin="30,25,0,0" VerticalAlignment="Top" Width="207" FontSize="15" />
+        <ListBox HorizontalAlignment="Left" Height="140" Margin="30,54,0,0" VerticalAlignment="Top" Width="207" ItemsSource="{Binding StructureList}"
                  SelectionMode="Multiple" SelectedItem="{Binding SelectedStructureId}">
             <ListBox.Resources>
                 <Style TargetType="ListBoxItem">
@@ -30,25 +30,24 @@
                 </Style>
             </ListBox.Resources>
         </ListBox>
-        <Label Content="新增" HorizontalAlignment="Left" Margin="30,199,0,0" VerticalAlignment="Top" Width="207" Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}"/>
-        <ListBox HorizontalAlignment="Left" Height="135" Margin="30,254,0,0" VerticalAlignment="Top" Width="172" ItemsSource="{Binding NewStructures}">
+        <Label Content="ADD" HorizontalAlignment="Left" Margin="30,194,0,0" VerticalAlignment="Top" Width="208"  FontSize="15"/>
+        <ListBox HorizontalAlignment="Left" Height="166" Margin="30,254,0,0" VerticalAlignment="Top" Width="207" ItemsSource="{Binding NewStructures}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox MinWidth="86" Height="24" TextWrapping="Wrap" Text="{Binding StructureId}"/>
-                        <ComboBox MinWidth="86" Height="24" ItemsSource="{Binding TypeList, ElementName=MyUserControl}" SelectedItem="{Binding StructureType}"/>
+                        <TextBox MinWidth="95" Height="24" TextWrapping="Wrap" Text="{Binding StructureId}"/>
+                        <ComboBox MinWidth="90" Height="24" ItemsSource="{Binding TypeList, ElementName=MyUserControl}" SelectedItem="{Binding StructureType}"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
         <Button Content="SAVE" HorizontalAlignment="Left" Margin="305,65,0,0" VerticalAlignment="Top" Height="25" Width="42"/>
-        <Label Content="" HorizontalAlignment="Left" Margin="269,34,0,0" VerticalAlignment="Top"/>
-        <Label Content="Protocol" HorizontalAlignment="Left" Height="32" Margin="291,24,0,0" VerticalAlignment="Top" Width="70" FontWeight="Bold" FontSize="15"/>
+        <Label Content="Protocol" HorizontalAlignment="Left" Height="32" Margin="291,24,0,0" VerticalAlignment="Top" Width="70" FontSize="15"/>
         <Button Content="LOAD" HorizontalAlignment="Left" Margin="305,97,0,0" VerticalAlignment="Top" Height="25" Width="42"/>
-        <Button Content="NEXT->" HorizontalAlignment="Left" Margin="298,364,0,0" VerticalAlignment="Top" Height="25" Width="56"/>
-        <Button Content="+" HorizontalAlignment="Left" Margin="207,229,0,0" VerticalAlignment="Top" Height="25" Width="25" Click="Button_Click_AddStructure"/>
-        <Button Content="-" HorizontalAlignment="Left" Margin="207,259,0,0" VerticalAlignment="Top" Height="25" Width="25"/>
-        <Label Content="Label" HorizontalAlignment="Left" Height="24" Margin="30,230,0,0" VerticalAlignment="Top" Width="86" Background="#FF075D3D" Foreground="#FFF3F3F3" FontWeight="Normal" FontSize="11"/>
-        <Label Content="Type" HorizontalAlignment="Left" Height="24" Margin="116,230,0,0" VerticalAlignment="Top" Width="86" Background="#FFD7F2E8" FontSize="11"/>
+        <Button Content="NEXT->" HorizontalAlignment="Left" Margin="298,364,0,0" VerticalAlignment="Top" Height="25" Width="56" FontWeight="Bold" Click="Button_Click_NEXT"/>
+        <Button Content="+" HorizontalAlignment="Left" Margin="245,225,0,0" VerticalAlignment="Top" Height="30" Width="32"  FontSize="18" BorderThickness="0" Background="MistyRose" Click="Button_Click_AddStructure"/>
+        <Button Content="-" HorizontalAlignment="Left" Margin="245,264,0,0" VerticalAlignment="Top" Height="32" Width="32"  FontSize="22" BorderThickness="0" Background="MistyRose" Click="Button_Click_deleteStructure"/>
+        <Label Content="StructureName" HorizontalAlignment="Left" Height="29" Margin="30,225,0,0" VerticalAlignment="Top" Width="105" Background="DeepPink" Foreground="#FFF3F3F3" FontWeight="Normal" FontSize="12"/>
+        <Label Content="Type" HorizontalAlignment="Left" Height="29" Margin="133,225,0,0" VerticalAlignment="Top" Width="105" Background="LightPink" FontSize="12"/>
     </Grid>
 </UserControl>
