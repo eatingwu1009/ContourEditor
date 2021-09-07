@@ -28,8 +28,10 @@ namespace V1
         public List<String> TypeList { get; set; }
         public List<String> TargetName { get; set; }
         public List<String> TargetType { get; set; }
+        public List<String> Common { get; set; }
         public int SelectedDeleteStructureIndex { get; set; }
         public int SelectedAddStructureIndex { get; set; }
+        public string DefaultPath { get; set; }
         public StructureSet ss { get; set; }
         public ObservableCollection<String> IsSelected { get; set; }
         public UserControl1(ScriptContext scriptContext)
@@ -57,6 +59,9 @@ namespace V1
             TypeList.Add("SUPPORT");
 
             ss = scriptContext.StructureSet;
+            IsSelected = new ObservableCollection<String>();
+
+            string DefaultPath = "\\Desktop\\" + scriptContext.Patient.Name + "_" + scriptContext.Course.Id + ".csv";
 
             InitializeComponent();
             DataContext = this;
@@ -74,27 +79,108 @@ namespace V1
         private void Button_Click_NEXT(object sender, RoutedEventArgs e)
         {
             string TargetName = string.Empty;
-            foreach (var structure in ss.Structures)
+            //var item = StructureList.Intersect(IsSelected);
+
+            //foreach (var Common in ss.Structures)
+            //{
+            //    switch (Common.DicomType)
+            //    {
+            //        case "GTV":
+            //        case "CTV":
+            //        case "PTV":
+            //            TargetName += ("\n" + Common.Id); TargetName += (" \t Type :  " + Common.DicomType);
+            //            break;
+            //    }
+            //}
+            foreach (object i in IsSelected)
+            { 
+                TargetName += i.ToString();
+            }  
+            MessageBox.Show(TargetName);
+            //string msg = string.Format("The following DELETE Structures are TARGET, Still Continue? {0}", TargetName);
+            //MessageBoxResult Result = MessageBox.Show(msg, "DoubleCheck", MessageBoxButton.OKCancel);
+            //if (Result == MessageBoxResult.OK)
+            //{
+            //    ss.Patient.BeginModifications();
+            //    ss.AddStructure("CONTROL", "PTV +5");
+            //}
+        }
+        private void Button_Click_SAVE(object sender, RoutedEventArgs e)
+        {
+            FileInfo fi = new FileInfo(DefaultPath);
+            if (!fi.Directory.Exists)
             {
-                switch (structure.DicomType)
+                fi.Directory.Create();
+            }
+            FileStream fs = new FileStream(DefaultPath, FileMode.Create);
+            StreamWriter sw = new StreamWriter(fs);
+            string data = string.Empty; 
+            //for (i = 0; i < numberofitem; i++)
+            //{
+            //    data = label[i].Content + "," + Box[i].SelectedItem + "," + TypeBox[i].SelectedItem +
+            //    "," + emptyboxdose[i].Text + "," + emptyboxcriteria[i].Text + "," + result[i].Content + "\n";
+            //    sw.Write(data);
+            //}
+            sw.Close();
+            fs.Close();
+        }
+        private bool CheckStructureIsExist(String StructureLoaded)
+        {
+            bool StructureIsExist = false;
+            foreach (var StructureInPlan in ss.Structures)
+            {
+                if (String.Equals(StructureLoaded, StructureInPlan.Id))
                 {
-                    case "GTV":
-                    case "CTV":
-                    case "PTV":
-                        TargetName += ("\n" + structure.Id); TargetName += (" \t Type :  " + structure.DicomType);
-                        break;
+                    StructureIsExist = true;
+                    break;
                 }
             }
-
-            string msg = string.Format("The following DELETE Structures are TARGET, Still Continue? {0}", TargetName);
-            MessageBoxResult Result = MessageBox.Show(msg, "DoubleCheck", MessageBoxButton.OKCancel);
-            if (Result == MessageBoxResult.OK)
-            {
-                ss.Patient.BeginModifications();
-                ss.AddStructure("CONTROL", "PTV +5");
-            }
+            return StructureIsExist;
         }
+        private void Button_Click_LOAD(object sender, RoutedEventArgs e)
+        {
+            string filename = @DefaultPath;
 
-         
+            //Load template
+            if (File.Exists(filename))
+            {
+                //Clear the main window before load the new template
+                DELETEListBox.Items.Clear();
+                ADDListBox.Items.Clear();
+
+                FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+                StreamReader sr = new StreamReader(fs);
+                string strLine = string.Empty;
+                string[] aryLine = null;
+                int j = 0;
+                while ((strLine = sr.ReadLine()) != null)
+                {
+                    aryLine = strLine.Split(',');
+                    int numberofitem = j + 1;
+                    updatelookupadd();
+                    Box[j].SelectedItem = aryLine[1];
+                    TypeBox[j].SelectedItem = aryLine[2];
+                    emptyboxdose[j].Text = aryLine[3];
+                    emptyboxcriteria[j].Text = aryLine[4];
+
+                    bool existornot = CheckStructureIsExist(Convert.ToString(aryLine[1]));
+                    if (existornot == false)
+                    {
+                        Box[j].Items.Add(Convert.ToString(aryLine[1]));
+
+                    }
+                    if (existornot == false && Convert.ToString(aryLine[1]) != "")
+                    {
+                        Box[j].Foreground = Brushes.Red;
+                    }
+                    j++;
+
+                }
+                sr.Close();
+                fs.Close();
+                scroll.Maximum = numberofitem;
+                CheckDoseBoxIsEditable();
+            }
+
     }
 }
