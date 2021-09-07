@@ -14,27 +14,25 @@
     <Grid Margin="0,0,0,-25">
         <Rectangle HorizontalAlignment="Left" Height="116" Margin="284,25,0,0" Stroke="Black" VerticalAlignment="Top" Width="85" ScrollViewer.VerticalScrollBarVisibility="Disabled" StrokeThickness="0" Cursor="Hand" UseLayoutRounding="False"/>
         <Label Content="DELETE" HorizontalAlignment="Left" Margin="30,25,0,0" VerticalAlignment="Top" Width="207" FontSize="15" />
-        <ListBox Name ="DELETEListBox" HorizontalAlignment="Left" Height="140" Margin="30,54,0,0" VerticalAlignment="Top" Width="207" ItemsSource="{Binding StructureList}"
+        <ListBox Name ="DELETEListBox" HorizontalAlignment="Left" Height="140" Margin="30,54,0,0" VerticalAlignment="Top" Width="207" ItemsSource="{Binding DeleteStructures}"
                  SelectionMode="Multiple" SelectedIndex="{Binding SelectedDeleteStructureIndex}">
-            <ListBox.Resources>
+            <!--<ListBox.Resources>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="OverridesDefaultStyle" Value="true" />
                     <Setter Property="SnapsToDevicePixels" Value="true" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListBoxItem">
-                                <CheckBox Name ="DELETEChecked" Margin="5,2"
-                                          IsChecked="{Binding IsSelected}">
-                                    <ContentPresenter />
-                                </CheckBox>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
                 </Style>
-            </ListBox.Resources>
+            </ListBox.Resources>-->
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <CheckBox Content="{Binding StructureId}"
+                                  IsChecked="{Binding IsSelected}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
         <Label Content="ADD" HorizontalAlignment="Left" Margin="30,194,0,0" VerticalAlignment="Top" Width="208"  FontSize="15"/>
-        <ListBox HorizontalAlignment="Left" Height="166" Margin="30,254,0,0" VerticalAlignment="Top" Width="220" ItemsSource="{Binding NewStructures}" SelectedIndex="{Binding SelectedAddStructureIndex}">
+        <ListBox Name ="ADDListBox" HorizontalAlignment="Left" Height="166" Margin="30,254,0,0" VerticalAlignment="Top" Width="220" ItemsSource="{Binding NewStructures}" SelectedIndex="{Binding SelectedAddStructureIndex}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">

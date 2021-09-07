@@ -24,7 +24,7 @@ namespace V1
     public partial class UserControl1 : UserControl
     {
         public ObservableCollection<NewStructure> NewStructures { get; set; }
-        public List<String> StructureList { get; set; }
+        public ObservableCollection<DeleteStructure> DeleteStructures { get; set; }
         public List<String> TypeList { get; set; }
         public List<String> TargetName { get; set; }
         public List<String> TargetType { get; set; }
@@ -33,14 +33,13 @@ namespace V1
         public int SelectedAddStructureIndex { get; set; }
         public string DefaultPath { get; set; }
         public StructureSet ss { get; set; }
-        public ObservableCollection<String> IsSelected { get; set; }
         public UserControl1(ScriptContext scriptContext)
         {
             NewStructures = new ObservableCollection<NewStructure>();
-            StructureList = new List<String>();
+            DeleteStructures = new ObservableCollection<DeleteStructure>();
             foreach (var structure in scriptContext.StructureSet.Structures)
             {
-                StructureList.Add(structure.Id);
+                DeleteStructures.Add(new DeleteStructure(structure.Id));
             }
             TypeList = new List<String>();
             TypeList.Add("GTV");
@@ -59,7 +58,6 @@ namespace V1
             TypeList.Add("SUPPORT");
 
             ss = scriptContext.StructureSet;
-            IsSelected = new ObservableCollection<String>();
 
             string DefaultPath = "\\Desktop\\" + scriptContext.Patient.Name + "_" + scriptContext.Course.Id + ".csv";
 
@@ -92,9 +90,9 @@ namespace V1
             //            break;
             //    }
             //}
-            foreach (object i in IsSelected)
+            foreach (DeleteStructure deleteStructure in DeleteStructures)
             { 
-                TargetName += i.ToString();
+                if (deleteStructure.IsSelected) TargetName += deleteStructure.StructureId + "\t";
             }  
             MessageBox.Show(TargetName);
             //string msg = string.Format("The following DELETE Structures are TARGET, Still Continue? {0}", TargetName);
@@ -139,48 +137,48 @@ namespace V1
         }
         private void Button_Click_LOAD(object sender, RoutedEventArgs e)
         {
-            string filename = @DefaultPath;
+            //string filename = @DefaultPath;
 
-            //Load template
-            if (File.Exists(filename))
-            {
-                //Clear the main window before load the new template
-                DELETEListBox.Items.Clear();
-                ADDListBox.Items.Clear();
+            ////Load template
+            //if (File.Exists(filename))
+            //{
+            //    //Clear the main window before load the new template
+            //    DELETEListBox.Items.Clear();
+            //    ADDListBox.Items.Clear();
 
-                FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
-                StreamReader sr = new StreamReader(fs);
-                string strLine = string.Empty;
-                string[] aryLine = null;
-                int j = 0;
-                while ((strLine = sr.ReadLine()) != null)
-                {
-                    aryLine = strLine.Split(',');
-                    int numberofitem = j + 1;
-                    updatelookupadd();
-                    Box[j].SelectedItem = aryLine[1];
-                    TypeBox[j].SelectedItem = aryLine[2];
-                    emptyboxdose[j].Text = aryLine[3];
-                    emptyboxcriteria[j].Text = aryLine[4];
+            //    FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            //    StreamReader sr = new StreamReader(fs);
+            //    string strLine = string.Empty;
+            //    string[] aryLine = null;
+            //    int j = 0;
+            //    while ((strLine = sr.ReadLine()) != null)
+            //    {
+            //        aryLine = strLine.Split(',');
+            //        int numberofitem = j + 1;
+            //        updatelookupadd();
+            //        Box[j].SelectedItem = aryLine[1];
+            //        TypeBox[j].SelectedItem = aryLine[2];
+            //        emptyboxdose[j].Text = aryLine[3];
+            //        emptyboxcriteria[j].Text = aryLine[4];
 
-                    bool existornot = CheckStructureIsExist(Convert.ToString(aryLine[1]));
-                    if (existornot == false)
-                    {
-                        Box[j].Items.Add(Convert.ToString(aryLine[1]));
+            //        bool existornot = CheckStructureIsExist(Convert.ToString(aryLine[1]));
+            //        if (existornot == false)
+            //        {
+            //            Box[j].Items.Add(Convert.ToString(aryLine[1]));
 
-                    }
-                    if (existornot == false && Convert.ToString(aryLine[1]) != "")
-                    {
-                        Box[j].Foreground = Brushes.Red;
-                    }
-                    j++;
+            //        }
+            //        if (existornot == false && Convert.ToString(aryLine[1]) != "")
+            //        {
+            //            Box[j].Foreground = Brushes.Red;
+            //        }
+            //        j++;
 
-                }
-                sr.Close();
-                fs.Close();
-                scroll.Maximum = numberofitem;
-                CheckDoseBoxIsEditable();
-            }
-
+            //    }
+            //    sr.Close();
+            //    fs.Close();
+            //    scroll.Maximum = numberofitem;
+            //    CheckDoseBoxIsEditable();
+            //}
+        }
     }
 }
