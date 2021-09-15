@@ -14,7 +14,7 @@
     <Grid Margin="0,0,0,-25">
         <Rectangle HorizontalAlignment="Left" Height="116" Margin="284,25,0,0" Stroke="Black" VerticalAlignment="Top" Width="85" ScrollViewer.VerticalScrollBarVisibility="Disabled" StrokeThickness="0" Cursor="Hand" UseLayoutRounding="False"/>
         <Label Content="DELETE" HorizontalAlignment="Left" Margin="30,25,0,0" VerticalAlignment="Top" Width="207" FontSize="15" />
-        <ListBox Name ="DELETEListBox" HorizontalAlignment="Left" Height="140" Margin="30,54,0,0" VerticalAlignment="Top" Width="207" ItemsSource="{Binding DeleteStructures}"
+        <ListBox Name ="DELETEListBox" HorizontalAlignment="Left" Height="140" Margin="30,54,0,0" VerticalAlignment="Top" Width="220" ItemsSource="{Binding DeleteStructures}"
                  SelectionMode="Multiple" SelectedIndex="{Binding SelectedDeleteStructureIndex}">
             <!--<ListBox.Resources>
                 <Style TargetType="ListBoxItem">

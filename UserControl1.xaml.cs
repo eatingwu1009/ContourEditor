@@ -41,6 +41,12 @@ namespace V1
             {
                 DeleteStructures.Add(new DeleteStructure(structure.Id));
             }
+            //Common = new List<String>();
+            //foreach (DeleteStructure deleteStructure in DeleteStructures)
+            //{
+            //    if (deleteStructure.IsSelected) Common.Add(deleteStructure.StructureId);
+            //}
+
             TypeList = new List<String>();
             TypeList.Add("GTV");
             TypeList.Add("CTV");
@@ -77,50 +83,63 @@ namespace V1
         private void Button_Click_NEXT(object sender, RoutedEventArgs e)
         {
             string TargetName = string.Empty;
-            //var item = StructureList.Intersect(IsSelected);
-
-            //foreach (var Common in ss.Structures)
-            //{
-            //    switch (Common.DicomType)
-            //    {
-            //        case "GTV":
-            //        case "CTV":
-            //        case "PTV":
-            //            TargetName += ("\n" + Common.Id); TargetName += (" \t Type :  " + Common.DicomType);
-            //            break;
-            //    }
-            //}
+            //var item = StructureList.Intersect(deleteStructure.IsSelected);
+            Common = new List<String>();
             foreach (DeleteStructure deleteStructure in DeleteStructures)
-            { 
-                if (deleteStructure.IsSelected) TargetName += deleteStructure.StructureId + "\t";
-            }  
-            MessageBox.Show(TargetName);
-            //string msg = string.Format("The following DELETE Structures are TARGET, Still Continue? {0}", TargetName);
-            //MessageBoxResult Result = MessageBox.Show(msg, "DoubleCheck", MessageBoxButton.OKCancel);
-            //if (Result == MessageBoxResult.OK)
-            //{
-            //    ss.Patient.BeginModifications();
-            //    ss.AddStructure("CONTROL", "PTV +5");
-            //}
+            {
+                if (deleteStructure.IsSelected) Common.Add(deleteStructure.StructureId);
+            }
+
+            //foreach (Structure structure in ss.Structures.Where(s=>Common.Contains(s.Id)))
+            var RStructures = ss.Structures.Where(s => Common.Contains(s.Id)).ToList();
+            foreach (Structure structure in RStructures)
+            {
+                switch (structure.DicomType)
+                {
+                    case "GTV":
+                    case "CTV":
+                    case "PTV":
+                        TargetName += ("\n" + structure.Id); TargetName += (" \t Type :  " + structure.DicomType);
+                        break;
+                }
+            }
+
+            string msg = string.Format("The following DELETE Structures are TARGET, Still Continue? {0}", TargetName);
+            MessageBoxResult Result = MessageBox.Show(msg, "DoubleCheck", MessageBoxButton.OKCancel);
+            if (Result == MessageBoxResult.OK)
+            {
+                ss.Patient.BeginModifications();
+                foreach (var i in NewStructures)
+                {
+                    ss.AddStructure(i.StructureType, i.StructureId);
+                }
+                foreach (Structure structure in RStructures)
+                {
+                    ss.RemoveStructure(structure);
+                }
+            }
         }
         private void Button_Click_SAVE(object sender, RoutedEventArgs e)
         {
-            FileInfo fi = new FileInfo(DefaultPath);
-            if (!fi.Directory.Exists)
-            {
-                fi.Directory.Create();
-            }
-            FileStream fs = new FileStream(DefaultPath, FileMode.Create);
-            StreamWriter sw = new StreamWriter(fs);
-            string data = string.Empty; 
+            MessageBox.Show("Produced by Eatingwu©");
+            
+            //FileInfo fi = new FileInfo(DefaultPath);
+            //if (!fi.Directory.Exists)
+            //{
+            //    fi.Directory.Create();
+            //}
+            //FileStream fs = new FileStream(DefaultPath, FileMode.Create);
+            //StreamWriter sw = new StreamWriter(fs);
+            //string data = string.Empty; 
+
             //for (i = 0; i < numberofitem; i++)
             //{
             //    data = label[i].Content + "," + Box[i].SelectedItem + "," + TypeBox[i].SelectedItem +
             //    "," + emptyboxdose[i].Text + "," + emptyboxcriteria[i].Text + "," + result[i].Content + "\n";
             //    sw.Write(data);
             //}
-            sw.Close();
-            fs.Close();
+            //sw.Close();
+            //fs.Close();
         }
         private bool CheckStructureIsExist(String StructureLoaded)
         {
@@ -137,6 +156,7 @@ namespace V1
         }
         private void Button_Click_LOAD(object sender, RoutedEventArgs e)
         {
+            MessageBox.Show("❤️ To Be Continued ❤️");
             //string filename = @DefaultPath;
 
             ////Load template
