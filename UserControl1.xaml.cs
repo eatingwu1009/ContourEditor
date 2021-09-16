@@ -33,7 +33,9 @@ namespace V1
         public int SelectedAddStructureIndex { get; set; }
         public string DefaultPath { get; set; }
         public StructureSet ss { get; set; }
+        public ScriptContext sc { get; set; }
         public UserControl1(ScriptContext scriptContext)
+
         {
             NewStructures = new ObservableCollection<NewStructure>();
             DeleteStructures = new ObservableCollection<DeleteStructure>();
@@ -64,8 +66,9 @@ namespace V1
             TypeList.Add("SUPPORT");
 
             ss = scriptContext.StructureSet;
+            sc = scriptContext;
 
-            string DefaultPath = "\\Desktop\\" + scriptContext.Patient.Name + "_" + scriptContext.Course.Id + ".csv";
+            //string DefaultPath = "C:\\Users\\aria\\source\\repos\\test" + scriptContext.Patient.Name + "_" + scriptContext.Course.Id + ".csv";
 
             InitializeComponent();
             DataContext = this;
@@ -121,25 +124,37 @@ namespace V1
         }
         private void Button_Click_SAVE(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Produced by Eatingwu©");
-            
-            //FileInfo fi = new FileInfo(DefaultPath);
-            //if (!fi.Directory.Exists)
-            //{
-            //    fi.Directory.Create();
-            //}
-            //FileStream fs = new FileStream(DefaultPath, FileMode.Create);
-            //StreamWriter sw = new StreamWriter(fs);
-            //string data = string.Empty; 
 
-            //for (i = 0; i < numberofitem; i++)
+            string DefaultPath = "C:\\Users\\aria\\source\\repos\\test\\" + sc.Patient.Name + "_" + sc.Course.Id + ".csv";
+            FileInfo fi = new FileInfo(DefaultPath);
+            bool exists = Directory.Exists(DefaultPath);
+            //if (!exists)
             //{
-            //    data = label[i].Content + "," + Box[i].SelectedItem + "," + TypeBox[i].SelectedItem +
-            //    "," + emptyboxdose[i].Text + "," + emptyboxcriteria[i].Text + "," + result[i].Content + "\n";
-            //    sw.Write(data);
+            //    Directory.CreateDirectory(DefaultPath);
             //}
-            //sw.Close();
-            //fs.Close();
+            if (!fi.Directory.Exists)
+            {
+                fi.Directory.Create();
+            }
+            FileStream fs = new FileStream(DefaultPath, FileMode.Create);
+            StreamWriter sw = new StreamWriter(fs);
+
+            Common = new List<String>();
+            foreach (DeleteStructure deleteStructure in DeleteStructures)
+            {
+                if (deleteStructure.IsSelected) Common.Add(deleteStructure.StructureId);
+            }
+            var RStructures = ss.Structures.Where(s => Common.Contains(s.Id)).ToList();
+
+            string Deldata = string.Empty;
+            foreach (Structure i in RStructures)
+            {
+                Deldata = i.Id + ",";
+                sw.Write(Deldata);
+            }
+            //string[] values = data.Split(',').Select(sValue => sValue.Trim()).ToArray();
+            sw.Close();
+            fs.Close();
         }
         private bool CheckStructureIsExist(String StructureLoaded)
         {
@@ -157,43 +172,43 @@ namespace V1
         private void Button_Click_LOAD(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("❤️ To Be Continued ❤️");
-            //string filename = @DefaultPath;
+            string filename = @DefaultPath;
 
-            ////Load template
-            //if (File.Exists(filename))
-            //{
-            //    //Clear the main window before load the new template
-            //    DELETEListBox.Items.Clear();
-            //    ADDListBox.Items.Clear();
+            //Load template
+            if (File.Exists(filename))
+            {
+                //Clear the main window before load the new template
+                DELETEListBox.Items.Clear();
+                ADDListBox.Items.Clear();
 
-            //    FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
-            //    StreamReader sr = new StreamReader(fs);
-            //    string strLine = string.Empty;
-            //    string[] aryLine = null;
-            //    int j = 0;
-            //    while ((strLine = sr.ReadLine()) != null)
-            //    {
-            //        aryLine = strLine.Split(',');
-            //        int numberofitem = j + 1;
-            //        updatelookupadd();
-            //        Box[j].SelectedItem = aryLine[1];
-            //        TypeBox[j].SelectedItem = aryLine[2];
-            //        emptyboxdose[j].Text = aryLine[3];
-            //        emptyboxcriteria[j].Text = aryLine[4];
+                //    FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+                //    StreamReader sr = new StreamReader(fs);
+                //    string strLine = string.Empty;
+                //    string[] aryLine = null;
+                //    int j = 0;
+                //    while ((strLine = sr.ReadLine()) != null)
+                //    {
+                //        aryLine = strLine.Split(',');
+                //        int numberofitem = j + 1;
+                //        updatelookupadd();
+                //        Box[j].SelectedItem = aryLine[1];
+                //        TypeBox[j].SelectedItem = aryLine[2];
+                //        emptyboxdose[j].Text = aryLine[3];
+                //        emptyboxcriteria[j].Text = aryLine[4];
 
-            //        bool existornot = CheckStructureIsExist(Convert.ToString(aryLine[1]));
-            //        if (existornot == false)
-            //        {
-            //            Box[j].Items.Add(Convert.ToString(aryLine[1]));
+                //        bool existornot = CheckStructureIsExist(Convert.ToString(aryLine[1]));
+                //        if (existornot == false)
+                //        {
+                //            Box[j].Items.Add(Convert.ToString(aryLine[1]));
 
-            //        }
-            //        if (existornot == false && Convert.ToString(aryLine[1]) != "")
-            //        {
-            //            Box[j].Foreground = Brushes.Red;
-            //        }
-            //        j++;
+                //        }
+                //        if (existornot == false && Convert.ToString(aryLine[1]) != "")
+                //        {
+                //            Box[j].Foreground = Brushes.Red;
+                //        }
+                //        j++;
 
-            //    }
+            }
             //    sr.Close();
             //    fs.Close();
             //    scroll.Maximum = numberofitem;

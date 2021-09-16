@@ -19,21 +19,29 @@ using V1;
 
 namespace VMS.TPS
 {
-  public class Script
-  {
-    public Script()
+    public class Script
     {
-    }
+        public Script()
+        {
+        }
 
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public void Execute(ScriptContext scriptContext, Window window)
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public void Execute(ScriptContext scriptContext, Window window)
         {
             // TODO : Add here the code that is called when the script is launched from Eclipse.
             UserControl1 userControl = new UserControl1(scriptContext);
-            window.Content =userControl;
+            window.Content = userControl;
             window.Title = "ContourEditor";
             window.Height = 480;
             window.Width = 420;
         }
-  }
+
+        public static void Main()
+        {
+            System.Windows.MessageBox.Show("This is what happens when you switch to a Windows application!");
+            // We will create our UserControl1 class so that you can create it in two ways:
+            // 1. Using ScriptContext (ESAPI gives this to you)
+            // 2. Using an object you create yourself (e.g. in the code)
+        }
+    }
 }
