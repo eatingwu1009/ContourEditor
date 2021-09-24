@@ -135,35 +135,38 @@ namespace V1
             //    Directory.CreateDirectory(DefaultPath);
             //}
             Common = new List<String>();
-            string Deldata = string.Empty;
             foreach (DeleteStructure deleteStructure in DeleteStructures)
             {
                 if (deleteStructure.IsSelected) Common.Add(deleteStructure.StructureId);
             }
             var RStructures = ss.Structures.Where(s => Common.Contains(s.Id)).ToList();
-            Stream myStream;
+            
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();;
-
             saveFileDialog1.Filter = "txt files(.csv)|*.csv";
             saveFileDialog1.RestoreDirectory = true;
-            
 
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 string filename = saveFileDialog1.FileName;
                 FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write);
                 StreamWriter sw = new StreamWriter(fs);
-               // if ((myStream = saveFileDialog1.OpenFile()) != null)
-                //{
-                    foreach (Structure i in RStructures)
+                string DelData = string.Empty;
+                string AddData = string.Empty;
+                foreach (Structure i in RStructures)
                     {
-                        Deldata = i.Id + ",";
-                        sw.Write(Deldata);
+                        DelData += i.Id + ",";
                     }
-                    sw.Flush();
-                    sw.Close();
-                    fs.Close();
-                //}
+                DelData = "--------DeletedDataFromHere--------"+"\r\n"+ DelData + "\r\n";
+                foreach (var i in NewStructures)
+                {
+                    AddData += i.StructureId + "&" + i.StructureType + ",";
+                }
+                AddData = "----------AddDataFromHere----------" + "\r\n" + AddData;
+                sw.Write(DelData);
+                sw.Write(AddData);
+                sw.Flush();
+                sw.Close();
+                fs.Close();
             }
 
             ////==========================================
