@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Forms;
 using VMS.TPS.Common.Model.API;
 
 namespace V1
@@ -21,7 +22,7 @@ namespace V1
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class UserControl1 : UserControl
+    public partial class UserControl1 : System.Windows.Controls.UserControl
     {
         public ObservableCollection<NewStructure> NewStructures { get; set; }
         public ObservableCollection<DeleteStructure> DeleteStructures { get; set; }
@@ -35,6 +36,7 @@ namespace V1
         public StructureSet ss { get; set; }
         public ScriptContext sc { get; set; }
         public UserControl1(ScriptContext scriptContext)
+
 
         {
             NewStructures = new ObservableCollection<NewStructure>();
@@ -108,7 +110,7 @@ namespace V1
             }
 
             string msg = string.Format("The following DELETE Structures are TARGET, Still Continue? {0}", TargetName);
-            MessageBoxResult Result = MessageBox.Show(msg, "DoubleCheck", MessageBoxButton.OKCancel);
+            MessageBoxResult Result = System.Windows.MessageBox.Show(msg, "DoubleCheck", MessageBoxButton.OKCancel);
             if (Result == MessageBoxResult.OK)
             {
                 ss.Patient.BeginModifications();
@@ -126,35 +128,69 @@ namespace V1
         {
 
             string DefaultPath = "C:\\Users\\aria\\source\\repos\\test\\" + sc.Patient.Name + "_" + sc.Course.Id + ".csv";
-            FileInfo fi = new FileInfo(DefaultPath);
-            bool exists = Directory.Exists(DefaultPath);
+            //FileInfo fi = new FileInfo(DefaultPath);
+            //bool exists = Directory.Exists(DefaultPath);
             //if (!exists)
             //{
             //    Directory.CreateDirectory(DefaultPath);
             //}
-            if (!fi.Directory.Exists)
-            {
-                fi.Directory.Create();
-            }
-            FileStream fs = new FileStream(DefaultPath, FileMode.Create);
-            StreamWriter sw = new StreamWriter(fs);
-
             Common = new List<String>();
+            string Deldata = string.Empty;
             foreach (DeleteStructure deleteStructure in DeleteStructures)
             {
                 if (deleteStructure.IsSelected) Common.Add(deleteStructure.StructureId);
             }
             var RStructures = ss.Structures.Where(s => Common.Contains(s.Id)).ToList();
+            Stream myStream;
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();;
 
-            string Deldata = string.Empty;
-            foreach (Structure i in RStructures)
+            saveFileDialog1.Filter = "txt files(.csv)|*.csv";
+            saveFileDialog1.RestoreDirectory = true;
+            
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                Deldata = i.Id + ",";
-                sw.Write(Deldata);
+                string filename = saveFileDialog1.FileName;
+                FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write);
+                StreamWriter sw = new StreamWriter(fs);
+               // if ((myStream = saveFileDialog1.OpenFile()) != null)
+                //{
+                    foreach (Structure i in RStructures)
+                    {
+                        Deldata = i.Id + ",";
+                        sw.Write(Deldata);
+                    }
+                    sw.Flush();
+                    sw.Close();
+                    fs.Close();
+                //}
             }
-            //string[] values = data.Split(',').Select(sValue => sValue.Trim()).ToArray();
-            sw.Close();
-            fs.Close();
+
+            ////==========================================
+            //if (!fi.Directory.Exists)
+            //{
+            //    fi.Directory.Create();
+            //}
+            //FileStream fs = new FileStream(DefaultPath, FileMode.Create);
+            //StreamWriter sw = new StreamWriter(fs);
+
+            //Common = new List<String>();
+            //foreach (DeleteStructure deleteStructure in DeleteStructures)
+            //{
+            //    if (deleteStructure.IsSelected) Common.Add(deleteStructure.StructureId);
+            //}
+            //var RStructures = ss.Structures.Where(s => Common.Contains(s.Id)).ToList();
+
+            //string Deldata = string.Empty;
+            //foreach (Structure i in RStructures)
+            //{
+            //    Deldata = i.Id + " ";
+            //    sw.Write(Deldata);
+            //}
+            ////string[] values = data.Split(',').Select(sValue => sValue.Trim()).ToArray();
+            //sw.Close();
+            //fs.Close();
+            ////======================================================
         }
         private bool CheckStructureIsExist(String StructureLoaded)
         {
@@ -171,49 +207,53 @@ namespace V1
         }
         private void Button_Click_LOAD(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("❤️ To Be Continued ❤️");
+            string DefaultPath = "C:\\Users\\aria\\source\\repos\\test\\" + sc.Patient.Name + "_" + sc.Course.Id + ".csv";
             string filename = @DefaultPath;
 
             //Load template
             if (File.Exists(filename))
             {
                 //Clear the main window before load the new template
-                DELETEListBox.Items.Clear();
+                var unChecked = DeleteStructures.Where(s => s.IsSelected).ToList();
+                foreach (var i in DeleteStructures)
+                {
+                    i.IsSelected = true;
+                }
                 ADDListBox.Items.Clear();
 
-                //    FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
-                //    StreamReader sr = new StreamReader(fs);
-                //    string strLine = string.Empty;
-                //    string[] aryLine = null;
-                //    int j = 0;
-                //    while ((strLine = sr.ReadLine()) != null)
-                //    {
-                //        aryLine = strLine.Split(',');
-                //        int numberofitem = j + 1;
-                //        updatelookupadd();
-                //        Box[j].SelectedItem = aryLine[1];
-                //        TypeBox[j].SelectedItem = aryLine[2];
-                //        emptyboxdose[j].Text = aryLine[3];
-                //        emptyboxcriteria[j].Text = aryLine[4];
+            //    FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            //    StreamReader sr = new StreamReader(fs);
+            //    string strLine = string.Empty;
+            //    string[] aryLine = null;
+            //    int j = 0;
+            //    while ((strLine = sr.ReadLine()) != null)
+            //    {
+            //        aryLine = strLine.Split(',');
+            //        int numberofitem = j + 1;
+            //        updatelookupadd();
+            //        Box[j].SelectedItem = aryLine[1];
+            //        TypeBox[j].SelectedItem = aryLine[2];
+            //        emptyboxdose[j].Text = aryLine[3];
+            //        emptyboxcriteria[j].Text = aryLine[4];
 
-                //        bool existornot = CheckStructureIsExist(Convert.ToString(aryLine[1]));
-                //        if (existornot == false)
-                //        {
-                //            Box[j].Items.Add(Convert.ToString(aryLine[1]));
+            //        bool existornot = CheckStructureIsExist(Convert.ToString(aryLine[1]));
+            //        if (existornot == false)
+            //        {
+            //            Box[j].Items.Add(Convert.ToString(aryLine[1]));
 
-                //        }
-                //        if (existornot == false && Convert.ToString(aryLine[1]) != "")
-                //        {
-                //            Box[j].Foreground = Brushes.Red;
-                //        }
-                //        j++;
+            //        }
+            //        if (existornot == false && Convert.ToString(aryLine[1]) != "")
+            //        {
+            //            Box[j].Foreground = Brushes.Red;
+            //        }
+            //        j++;
 
+            //    }
+            //sr.Close();
+            //fs.Close();
+            //scroll.Maximum = numberofitem;
+            //CheckDoseBoxIsEditable();
             }
-            //    sr.Close();
-            //    fs.Close();
-            //    scroll.Maximum = numberofitem;
-            //    CheckDoseBoxIsEditable();
-            //}
         }
     }
 }
