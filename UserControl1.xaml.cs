@@ -127,7 +127,7 @@ namespace V1
         private void Button_Click_SAVE(object sender, RoutedEventArgs e)
         {
 
-            string DefaultPath = "C:\\Users\\aria\\source\\repos\\test\\" + sc.Patient.Name + "_" + sc.Course.Id + ".csv";
+            //string DefaultPath = "C:\\Users\\aria\\source\\repos\\test\\" + sc.Patient.Name + "_" + sc.Course.Id + ".csv";
             //FileInfo fi = new FileInfo(DefaultPath);
             //bool exists = Directory.Exists(DefaultPath);
             //if (!exists)
@@ -141,7 +141,7 @@ namespace V1
             }
             var RStructures = ss.Structures.Where(s => Common.Contains(s.Id)).ToList();
             
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();;
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "txt files(.csv)|*.csv";
             saveFileDialog1.RestoreDirectory = true;
 
@@ -210,53 +210,73 @@ namespace V1
         }
         private void Button_Click_LOAD(object sender, RoutedEventArgs e)
         {
-            string DefaultPath = "C:\\Users\\aria\\source\\repos\\test\\" + sc.Patient.Name + "_" + sc.Course.Id + ".csv";
-            string filename = @DefaultPath;
+            OpenFileDialog openFileDialog1 = new OpenFileDialog(); ;
+            openFileDialog1.Filter = "txt files(.csv)|*.csv";
+            openFileDialog1.RestoreDirectory = true;
+            var filePath = string.Empty;
 
-            //Load template
-            if (File.Exists(filename))
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                //Clear the main window before load the new template
-                var unChecked = DeleteStructures.Where(s => s.IsSelected).ToList();
-                foreach (var i in DeleteStructures)
-                {
-                    i.IsSelected = true;
-                }
-                ADDListBox.Items.Clear();
+                filePath = openFileDialog1.FileName;
+                FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                StreamReader sr = new StreamReader(fs);
+                string[] filelines = File.ReadAllLines(filePath);
 
-            //    FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
-            //    StreamReader sr = new StreamReader(fs);
-            //    string strLine = string.Empty;
-            //    string[] aryLine = null;
-            //    int j = 0;
-            //    while ((strLine = sr.ReadLine()) != null)
-            //    {
-            //        aryLine = strLine.Split(',');
-            //        int numberofitem = j + 1;
-            //        updatelookupadd();
-            //        Box[j].SelectedItem = aryLine[1];
-            //        TypeBox[j].SelectedItem = aryLine[2];
-            //        emptyboxdose[j].Text = aryLine[3];
-            //        emptyboxcriteria[j].Text = aryLine[4];
+                string sourceDel = filelines[1];
+                string sourceAdd = filelines[3];
+                    
+                //int count = sourceAdd.Count(f => f == ',');
 
-            //        bool existornot = CheckStructureIsExist(Convert.ToString(aryLine[1]));
-            //        if (existornot == false)
-            //        {
-            //            Box[j].Items.Add(Convert.ToString(aryLine[1]));
+                System.Windows.MessageBox.Show(sourceDel + sourceAdd);
+                sr.Close();
+                fs.Close();
 
-            //        }
-            //        if (existornot == false && Convert.ToString(aryLine[1]) != "")
-            //        {
-            //            Box[j].Foreground = Brushes.Red;
-            //        }
-            //        j++;
-
-            //    }
-            //sr.Close();
-            //fs.Close();
-            //scroll.Maximum = numberofitem;
-            //CheckDoseBoxIsEditable();
             }
-        }
+
+                //Load template
+                //if (File.Exists(filename))
+                //{
+                //    //Clear the main window before load the new template
+                //    var unChecked = DeleteStructures.Where(s => s.IsSelected).ToList();
+                //    foreach (var i in DeleteStructures)
+                //    {
+                //        i.IsSelected = true;
+                //    }
+                //    ADDListBox.Items.Clear();
+
+                //    FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+                //    StreamReader sr = new StreamReader(fs);
+                //    string strLine = string.Empty;
+                //    string[] aryLine = null;
+                //    int j = 0;
+                //    while ((strLine = sr.ReadLine()) != null)
+                //    {
+                //        aryLine = strLine.Split(',');
+                //        int numberofitem = j + 1;
+                //        updatelookupadd();
+                //        Box[j].SelectedItem = aryLine[1];
+                //        TypeBox[j].SelectedItem = aryLine[2];
+                //        emptyboxdose[j].Text = aryLine[3];
+                //        emptyboxcriteria[j].Text = aryLine[4];
+
+                //        bool existornot = CheckStructureIsExist(Convert.ToString(aryLine[1]));
+                //        if (existornot == false)
+                //        {
+                //            Box[j].Items.Add(Convert.ToString(aryLine[1]));
+
+                //        }
+                //        if (existornot == false && Convert.ToString(aryLine[1]) != "")
+                //        {
+                //            Box[j].Foreground = Brushes.Red;
+                //        }
+                //        j++;
+
+                //    }
+                //sr.Close();
+                //fs.Close();
+                //scroll.Maximum = numberofitem;
+                //CheckDoseBoxIsEditable();
+                //}
+            }
     }
 }
