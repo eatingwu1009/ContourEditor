@@ -225,9 +225,10 @@ namespace V1
                 string sourceDel = filelines[1];
                 string sourceAdd = filelines[3];
                     
-                //int count = sourceAdd.Count(f => f == ',');
+                int countDel = sourceDel.Count(f => f == ',');
+                int countAdd = sourceAdd.Count(f => f == ',');
 
-                System.Windows.MessageBox.Show(sourceDel + sourceAdd);
+                System.Windows.MessageBox.Show(sourceDel + sourceAdd + countDel +","+ countAdd);
                 sr.Close();
                 fs.Close();
 
