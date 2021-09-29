@@ -25,7 +25,8 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
-                        <CheckBox Content="{Binding StructureId}"
+                        <CheckBox Name ="CheckBox"
+                                  Content="{Binding StructureId}"
                                   IsChecked="{Binding IsSelected}"/>
                     </StackPanel>
                 </DataTemplate>

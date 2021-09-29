@@ -36,8 +36,6 @@ namespace V1
         public StructureSet ss { get; set; }
         public ScriptContext sc { get; set; }
         public UserControl1(ScriptContext scriptContext)
-
-
         {
             NewStructures = new ObservableCollection<NewStructure>();
             DeleteStructures = new ObservableCollection<DeleteStructure>();
@@ -222,13 +220,34 @@ namespace V1
                 StreamReader sr = new StreamReader(fs);
                 string[] filelines = File.ReadAllLines(filePath);
 
-                string sourceDel = filelines[1];
-                string sourceAdd = filelines[3];
-                    
-                int countDel = sourceDel.Count(f => f == ',');
-                int countAdd = sourceAdd.Count(f => f == ',');
+                List<string> sourceDel = (filelines[1].Trim()).Split(',').ToList();
+                var DEL = DeleteStructures.Where(s => sourceDel.Contains(s.StructureId)).ToList();
+                foreach (DeleteStructure deleteStructure in DeleteStructures)
+                {
+                    deleteStructure.IsSelected = false;
+                }
+                //foreach (DeleteStructure deleteStructure in DEL)
+                //{
+                //    deleteStructure.IsSelected = true;
+                //}
+                //ADDListBox.DataContext = null;
 
-                System.Windows.MessageBox.Show(sourceDel + sourceAdd + countDel +","+ countAdd);
+                string sourceAdd = filelines[3].Trim();
+                List<string> Add = (filelines[3].Trim()).Split(',').ToList();
+                for (int a = 0; a < sourceAdd.Count(f => f == ','); a++)
+                {
+                    string[] b = Add[a].Split('&');
+                    NewStructures.Add(new NewStructure() { StructureId = b[0], StructureType = b[1] });
+                }
+
+
+
+                //for (int a = 0; a < sourceDel.Count(f => f == ','); a++)
+                //{
+                //    string DEL += sourceDel[a].Trim();
+                //}
+
+                //System.Windows.MessageBox.Show(":)");
                 sr.Close();
                 fs.Close();
 
