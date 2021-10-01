@@ -16,6 +16,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
 using VMS.TPS.Common.Model.API;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace V1
 {
@@ -34,11 +36,11 @@ namespace V1
         public int SelectedAddStructureIndex { get; set; }
         public string DefaultPath { get; set; }
         public StructureSet ss { get; set; }
-        public ScriptContext sc { get; set; }
         public UserControl1(ScriptContext scriptContext)
         {
             NewStructures = new ObservableCollection<NewStructure>();
             DeleteStructures = new ObservableCollection<DeleteStructure>();
+
             foreach (var structure in scriptContext.StructureSet.Structures)
             {
                 DeleteStructures.Add(new DeleteStructure(structure.Id));
@@ -66,7 +68,6 @@ namespace V1
             TypeList.Add("SUPPORT");
 
             ss = scriptContext.StructureSet;
-            sc = scriptContext;
 
             //string DefaultPath = "C:\\Users\\aria\\source\\repos\\test" + scriptContext.Patient.Name + "_" + scriptContext.Course.Id + ".csv";
 
@@ -120,6 +121,7 @@ namespace V1
                 {
                     ss.RemoveStructure(structure);
                 }
+                CollectionViewSource.GetDefaultView(this.DeleteStructures).Refresh();
             }
         }
         private void Button_Click_SAVE(object sender, RoutedEventArgs e)
@@ -216,21 +218,14 @@ namespace V1
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 filePath = openFileDialog1.FileName;
-                FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                StreamReader sr = new StreamReader(fs);
                 string[] filelines = File.ReadAllLines(filePath);
-
-                List<string> sourceDel = (filelines[1].Trim()).Split(',').ToList();
-                var DEL = DeleteStructures.Where(s => sourceDel.Contains(s.StructureId)).ToList();
+                List<string> sourceDel = filelines[1].Trim().Split(',').Select(s => s.Trim()).ToList();
                 foreach (DeleteStructure deleteStructure in DeleteStructures)
                 {
-                    deleteStructure.IsSelected = false;
+                    if (sourceDel.Contains(deleteStructure.StructureId)) deleteStructure.IsSelected = true;
                 }
-                //foreach (DeleteStructure deleteStructure in DEL)
-                //{
-                //    deleteStructure.IsSelected = true;
-                //}
-                //ADDListBox.DataContext = null;
+
+                UpdateDeleteStructuresCollection();
 
                 string sourceAdd = filelines[3].Trim();
                 List<string> Add = (filelines[3].Trim()).Split(',').ToList();
@@ -239,18 +234,6 @@ namespace V1
                     string[] b = Add[a].Split('&');
                     NewStructures.Add(new NewStructure() { StructureId = b[0], StructureType = b[1] });
                 }
-
-
-
-                //for (int a = 0; a < sourceDel.Count(f => f == ','); a++)
-                //{
-                //    string DEL += sourceDel[a].Trim();
-                //}
-
-                //System.Windows.MessageBox.Show(":)");
-                sr.Close();
-                fs.Close();
-
             }
 
                 //Load template
@@ -298,5 +281,12 @@ namespace V1
                 //CheckDoseBoxIsEditable();
                 //}
             }
+
+        private void UpdateDeleteStructuresCollection()
+        {
+            DeleteStructure dummyStructure = new DeleteStructure("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            DeleteStructures.Add(dummyStructure);
+            DeleteStructures.Remove(dummyStructure);
+        }
     }
 }
