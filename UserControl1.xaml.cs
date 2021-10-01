@@ -36,10 +36,11 @@ namespace V1
         public int SelectedAddStructureIndex { get; set; }
         public string DefaultPath { get; set; }
         public StructureSet ss { get; set; }
-        private ScriptContext _scriptContext;
+        private StructureSet _ss;
         public UserControl1(ScriptContext scriptContext)
         {
-            _scriptContext = scriptContext;
+            ss = scriptContext.StructureSet;
+            _ss = scriptContext.StructureSet;
             NewStructures = new ObservableCollection<NewStructure>();
             DeleteStructures = new ObservableCollection<DeleteStructure>();
 
@@ -61,8 +62,6 @@ namespace V1
             TypeList.Add("DOSE_REGION");
             TypeList.Add("SUPPORT");
 
-            ss = scriptContext.StructureSet;
-
             //string DefaultPath = "C:\\Users\\aria\\source\\repos\\test" + scriptContext.Patient.Name + "_" + scriptContext.Course.Id + ".csv";
 
             InitializeComponent();
@@ -72,7 +71,7 @@ namespace V1
         private void RefreshDeleteStructures()
         {
             DeleteStructures.Clear();
-            foreach (var structure in _scriptContext.StructureSet.Structures)
+            foreach (var structure in _ss.Structures)
             {
                 DeleteStructures.Add(new DeleteStructure(structure.Id));
             }
@@ -111,8 +110,8 @@ namespace V1
                 }
             }
 
-            string msg = string.Format("The following DELETE Structures are TARGET, Still Continue? {0}", TargetName);
-            MessageBoxResult Result = System.Windows.MessageBox.Show(msg, "DoubleCheck", MessageBoxButton.OKCancel);
+            string msg = string.Format(" The following DELETE Structures are TARGET, Still Continue? {0}", TargetName);
+            MessageBoxResult Result = System.Windows.MessageBox.Show(msg, "DoubleCheck", MessageBoxButton.OKCancel, (MessageBoxImage)System.Windows.Forms.MessageBoxIcon.Warning);
             if (Result == MessageBoxResult.OK)
             {
                 ss.Patient.BeginModifications();
@@ -124,7 +123,7 @@ namespace V1
                 {
                     ss.RemoveStructure(structure);
                 }
-
+                NewStructures.Clear();
                 RefreshDeleteStructures();
             }
         }
