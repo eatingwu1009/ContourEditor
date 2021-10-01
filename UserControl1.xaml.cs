@@ -36,20 +36,14 @@ namespace V1
         public int SelectedAddStructureIndex { get; set; }
         public string DefaultPath { get; set; }
         public StructureSet ss { get; set; }
+        private ScriptContext _scriptContext;
         public UserControl1(ScriptContext scriptContext)
         {
+            _scriptContext = scriptContext;
             NewStructures = new ObservableCollection<NewStructure>();
             DeleteStructures = new ObservableCollection<DeleteStructure>();
 
-            foreach (var structure in scriptContext.StructureSet.Structures)
-            {
-                DeleteStructures.Add(new DeleteStructure(structure.Id));
-            }
-            //Common = new List<String>();
-            //foreach (DeleteStructure deleteStructure in DeleteStructures)
-            //{
-            //    if (deleteStructure.IsSelected) Common.Add(deleteStructure.StructureId);
-            //}
+            RefreshDeleteStructures();
 
             TypeList = new List<String>();
             TypeList.Add("GTV");
@@ -73,6 +67,15 @@ namespace V1
 
             InitializeComponent();
             DataContext = this;
+        }
+
+        private void RefreshDeleteStructures()
+        {
+            DeleteStructures.Clear();
+            foreach (var structure in _scriptContext.StructureSet.Structures)
+            {
+                DeleteStructures.Add(new DeleteStructure(structure.Id));
+            }
         }
 
         private void Button_Click_AddStructure(object sender, RoutedEventArgs e)
@@ -121,26 +124,19 @@ namespace V1
                 {
                     ss.RemoveStructure(structure);
                 }
-                CollectionViewSource.GetDefaultView(this.DeleteStructures).Refresh();
+
+                RefreshDeleteStructures();
             }
         }
         private void Button_Click_SAVE(object sender, RoutedEventArgs e)
         {
-
-            //string DefaultPath = "C:\\Users\\aria\\source\\repos\\test\\" + sc.Patient.Name + "_" + sc.Course.Id + ".csv";
-            //FileInfo fi = new FileInfo(DefaultPath);
-            //bool exists = Directory.Exists(DefaultPath);
-            //if (!exists)
-            //{
-            //    Directory.CreateDirectory(DefaultPath);
-            //}
             Common = new List<String>();
             foreach (DeleteStructure deleteStructure in DeleteStructures)
             {
                 if (deleteStructure.IsSelected) Common.Add(deleteStructure.StructureId);
             }
             var RStructures = ss.Structures.Where(s => Common.Contains(s.Id)).ToList();
-            
+
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "txt files(.csv)|*.csv";
             saveFileDialog1.RestoreDirectory = true;
@@ -153,10 +149,10 @@ namespace V1
                 string DelData = string.Empty;
                 string AddData = string.Empty;
                 foreach (Structure i in RStructures)
-                    {
-                        DelData += i.Id + ",";
-                    }
-                DelData = "--------DeletedDataFromHere--------"+"\r\n"+ DelData + "\r\n";
+                {
+                    DelData += i.Id + ",";
+                }
+                DelData = "--------DeletedDataFromHere--------" + "\r\n" + DelData + "\r\n";
                 foreach (var i in NewStructures)
                 {
                     AddData += i.StructureId + "&" + i.StructureType + ",";
@@ -168,32 +164,6 @@ namespace V1
                 sw.Close();
                 fs.Close();
             }
-
-            ////==========================================
-            //if (!fi.Directory.Exists)
-            //{
-            //    fi.Directory.Create();
-            //}
-            //FileStream fs = new FileStream(DefaultPath, FileMode.Create);
-            //StreamWriter sw = new StreamWriter(fs);
-
-            //Common = new List<String>();
-            //foreach (DeleteStructure deleteStructure in DeleteStructures)
-            //{
-            //    if (deleteStructure.IsSelected) Common.Add(deleteStructure.StructureId);
-            //}
-            //var RStructures = ss.Structures.Where(s => Common.Contains(s.Id)).ToList();
-
-            //string Deldata = string.Empty;
-            //foreach (Structure i in RStructures)
-            //{
-            //    Deldata = i.Id + " ";
-            //    sw.Write(Deldata);
-            //}
-            ////string[] values = data.Split(',').Select(sValue => sValue.Trim()).ToArray();
-            //sw.Close();
-            //fs.Close();
-            ////======================================================
         }
         private bool CheckStructureIsExist(String StructureLoaded)
         {
@@ -225,8 +195,6 @@ namespace V1
                     if (sourceDel.Contains(deleteStructure.StructureId)) deleteStructure.IsSelected = true;
                 }
 
-                UpdateDeleteStructuresCollection();
-
                 string sourceAdd = filelines[3].Trim();
                 List<string> Add = (filelines[3].Trim()).Split(',').ToList();
                 for (int a = 0; a < sourceAdd.Count(f => f == ','); a++)
@@ -235,58 +203,6 @@ namespace V1
                     NewStructures.Add(new NewStructure() { StructureId = b[0], StructureType = b[1] });
                 }
             }
-
-                //Load template
-                //if (File.Exists(filename))
-                //{
-                //    //Clear the main window before load the new template
-                //    var unChecked = DeleteStructures.Where(s => s.IsSelected).ToList();
-                //    foreach (var i in DeleteStructures)
-                //    {
-                //        i.IsSelected = true;
-                //    }
-                //    ADDListBox.Items.Clear();
-
-                //    FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
-                //    StreamReader sr = new StreamReader(fs);
-                //    string strLine = string.Empty;
-                //    string[] aryLine = null;
-                //    int j = 0;
-                //    while ((strLine = sr.ReadLine()) != null)
-                //    {
-                //        aryLine = strLine.Split(',');
-                //        int numberofitem = j + 1;
-                //        updatelookupadd();
-                //        Box[j].SelectedItem = aryLine[1];
-                //        TypeBox[j].SelectedItem = aryLine[2];
-                //        emptyboxdose[j].Text = aryLine[3];
-                //        emptyboxcriteria[j].Text = aryLine[4];
-
-                //        bool existornot = CheckStructureIsExist(Convert.ToString(aryLine[1]));
-                //        if (existornot == false)
-                //        {
-                //            Box[j].Items.Add(Convert.ToString(aryLine[1]));
-
-                //        }
-                //        if (existornot == false && Convert.ToString(aryLine[1]) != "")
-                //        {
-                //            Box[j].Foreground = Brushes.Red;
-                //        }
-                //        j++;
-
-                //    }
-                //sr.Close();
-                //fs.Close();
-                //scroll.Maximum = numberofitem;
-                //CheckDoseBoxIsEditable();
-                //}
-            }
-
-        private void UpdateDeleteStructuresCollection()
-        {
-            DeleteStructure dummyStructure = new DeleteStructure("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-            DeleteStructures.Add(dummyStructure);
-            DeleteStructures.Remove(dummyStructure);
         }
     }
 }
