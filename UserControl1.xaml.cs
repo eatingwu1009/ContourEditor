@@ -203,5 +203,13 @@ namespace V1
                 }
             }
         }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            foreach (DeleteStructure deleteStructure in DeleteStructures)
+            {
+                deleteStructure.IsSelected = true;
+            }
+        }
     }
 }
