@@ -51,6 +51,6 @@
         <Button Content="-" HorizontalAlignment="Left" Margin="258,295,0,0" VerticalAlignment="Top" Height="32" Width="32"  FontSize="22" BorderThickness="0" Background="MistyRose" Click="Button_Click_DeleteStructure"/>
         <Label Content="StructureName" HorizontalAlignment="Left" Height="29" Margin="30,225,0,0" VerticalAlignment="Top" Width="105" Background="DeepPink" Foreground="#FFF3F3F3" FontWeight="Normal" FontSize="12"/>
         <Label Content="Type" HorizontalAlignment="Left" Height="29" Margin="133,225,0,0" VerticalAlignment="Top" Width="117" Background="LightPink" FontSize="12"/>
-        <CheckBox Content="Select all" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="181,34,0,0" Checked="CheckBox_Checked"/>
+        <CheckBox Content="Select all" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="181,34,0,0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
     </Grid>
 </UserControl>
