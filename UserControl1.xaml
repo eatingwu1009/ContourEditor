@@ -16,12 +16,6 @@
         <Label Content="DELETE" HorizontalAlignment="Left" Margin="30,25,0,0" VerticalAlignment="Top" Width="207" FontSize="15" />
         <ListBox Name ="DELETEListBox" HorizontalAlignment="Left" Height="140" Margin="30,54,0,0" VerticalAlignment="Top" Width="220" ItemsSource="{Binding DeleteStructures}"
                  SelectionMode="Multiple" SelectedIndex="{Binding SelectedDeleteStructureIndex}">
-            <!--<ListBox.Resources>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="OverridesDefaultStyle" Value="true" />
-                    <Setter Property="SnapsToDevicePixels" Value="true" />
-                </Style>
-            </ListBox.Resources>-->
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>

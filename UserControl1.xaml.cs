@@ -89,6 +89,7 @@ namespace V1
         private void Button_Click_NEXT(object sender, RoutedEventArgs e)
         {
             string TargetName = string.Empty;
+            string msg = string.Empty;
             //var item = StructureList.Intersect(deleteStructure.IsSelected);
             Common = new List<String>();
             foreach (DeleteStructure deleteStructure in DeleteStructures)
@@ -97,6 +98,7 @@ namespace V1
             }
 
             //foreach (Structure structure in ss.Structures.Where(s=>Common.Contains(s.Id)))
+            int a = 0;
             var RStructures = ss.Structures.Where(s => Common.Contains(s.Id)).ToList();
             foreach (Structure structure in RStructures)
             {
@@ -106,18 +108,35 @@ namespace V1
                     case "CTV":
                     case "PTV":
                         TargetName += ("\n" + structure.Id); TargetName += (" \t Type :  " + structure.DicomType);
+                        a = a + 1;
                         break;
                 }
             }
-
-            string msg = string.Format(" The following DELETE Structures are TARGET, Still Continue? {0}", TargetName);
+            
+            if (a == 0)
+            {
+                msg = string.Format(" There is NO Target-type DELETE Structure ");
+            }
+            else
+            {
+                msg = string.Format(" The following DELETE Structures are TARGET, Still Continue? {0}", TargetName);
+            }
             MessageBoxResult Result = System.Windows.MessageBox.Show(msg, "DoubleCheck", MessageBoxButton.OKCancel, (MessageBoxImage)System.Windows.Forms.MessageBoxIcon.Warning);
+
             if (Result == MessageBoxResult.OK)
             {
                 ss.Patient.BeginModifications();
                 foreach (var i in NewStructures)
                 {
-                    ss.AddStructure(i.StructureType, i.StructureId);
+                    if (i.StructureType is null)
+                    {
+                        ss.AddStructure("AVOIDANCE", i.StructureId);
+                    }
+                    else
+                    {
+                        ss.AddStructure(i.StructureType, i.StructureId);
+                    }   
+
                 }
                 foreach (Structure structure in RStructures)
                 {
